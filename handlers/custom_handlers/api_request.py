@@ -209,7 +209,7 @@ def search(message: Message, data) -> None:
     payload = {
         "currency": data['currency'],
         "eapid": 1,
-        "locale": "ru_US",
+        "locale": "en_US",
         "siteId": 300000001,
         "destination": {
             "regionId": str(gaiaId[0])
