@@ -1,17 +1,34 @@
 from telebot.handler_backends import State, StatesGroup
 
 
-class UserInputState(StatesGroup):
-    input_city = State()
-    check_city = State()
-    price_min = State()
-    price_max = State()
+class UserInfoState(StatesGroup):
+    name = State()
+    age = State()
+    country = State()
+    city = State()
+    phone_number = State()
+    count = State()
+    photo = State()
+    price_range = State()
     distance_min = State()
     distance_max = State()
+    date = State()
+    price_night = State()
+    search = State()
+    wait_city = State()
+    currency_selection = State()
     check_in = State()
     check_out = State()
-    count_hotel = State()
-    count_photos = State()
-    info = State()
+    calendar = State()
+    price_min = State()
+    price_max = State()
+    photo_count = State()
+    clean_history = State()
+
+
+class DateRangeState(StatesGroup):
+    check_in = State
+    check_out = State
+
 
 
