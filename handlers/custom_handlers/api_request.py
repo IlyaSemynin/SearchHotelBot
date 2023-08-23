@@ -36,7 +36,7 @@ def cleaner(string: str) -> float:
     return float(numbers)
 
 
-def get_adres_and_rate_and_photo(hotel_id: str) -> list:
+def get_address_and_rate_and_photo(hotel_id: str) -> list:
     url = "https://hotels4.p.rapidapi.com/properties/v2/detail"
 
     payload = {
@@ -46,13 +46,9 @@ def get_adres_and_rate_and_photo(hotel_id: str) -> list:
         "siteId": 300000001,
         "propertyId": hotel_id
     }
-    headers = {
-        "content-type": "application/json",
-        "X-RapidAPI-Key": "b77f8f0287msh602b6723094272ep16dab9jsne4c36fea2f93",
-        "X-RapidAPI-Host": "hotels4.p.rapidapi.com"
-    }
 
-    response = requests.request("POST", url, json=payload, headers=headers).json()
+    response = requests.request("POST", url, json=payload, headers=config.headers).json()
+
     return [response['data']['propertyInfo']['summary']['location']['address']['addressLine'],
             response['data']['propertyInfo']['summary']['overview']['propertyRating']['rating'],
             response['data']['propertyInfo']['propertyGallery']['images']]
@@ -60,7 +56,7 @@ def get_adres_and_rate_and_photo(hotel_id: str) -> list:
 
 def get_result_dict(entities_list, result_dict):
     for hotel in entities_list[:8]:
-        res_rate_photo: list = get_adres_and_rate_and_photo(hotel['id'])
+        res_rate_photo: list = get_address_and_rate_and_photo(hotel['id'])
         print('Hotels - ID', hotel['id'])
         result_dict.update({hotel['id']: {'name': hotel['name'], 'adress': res_rate_photo[0],
                                           'star_rating': res_rate_photo[1],
@@ -190,12 +186,12 @@ def search(message: Message, data) -> None:
     bot.set_state(message.from_user.id, UserInfoState.search, message.chat.id)
     url_search = "https://hotels4.p.rapidapi.com/locations/v3/search"
     querystring = {"q": data['city'], "locale": "en_US", "langid": "1033", "siteid": "300000001"}
-    headers = {
-        "X-RapidAPI-Key": config.RAPID_API_KEY,
-        "X-RapidAPI-Host": "hotels4.p.rapidapi.com"
-    }
+    # headers = {
+    #     "X-RapidAPI-Key": config.RAPID_API_KEY,
+    #     "X-RapidAPI-Host": "hotels4.p.rapidapi.com"
+    # }
 
-    response_search = request_to_api(url_search, headers, querystring)
+    response_search = request_to_api(url_search, config.headers, querystring)
     try:
         if response_search.status_code == 200:
             get_regionId(response_search.json())
@@ -241,12 +237,12 @@ def search(message: Message, data) -> None:
         }
     }
 
-    headers = {
-        "content-type": "application/json",
-        "X-RapidAPI-Key": config.RAPID_API_KEY,
-        "X-RapidAPI-Host": "hotels4.p.rapidapi.com"
-    }
-    response_list = requests.request("POST", url_list, json=payload, headers=headers)
+    # headers = {
+    #     "content-type": "application/json",
+    #     "X-RapidAPI-Key": config.RAPID_API_KEY,
+    #     "X-RapidAPI-Host": "hotels4.p.rapidapi.com"
+    # }
+    response_list = requests.request("POST", url_list, json=payload, headers=config.headers)
     try:
         data_list = response_list.json()
 

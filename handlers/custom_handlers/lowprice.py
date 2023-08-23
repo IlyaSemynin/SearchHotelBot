@@ -11,10 +11,11 @@ from handlers.custom_handlers.api_request import search
 from config_data import config
 
 
-@bot.message_handler(commands=["custom", "low", "high"])
+@bot.message_handler(commands=["low"])
 def start_script(message: Message) -> None:
     bot.set_state(message.from_user.id, UserInfoState.wait_city, message.chat.id)
-    bot.send_message(message.from_user.id, f"{message.from_user.first_name}, Для начала поиска введите город:",
+    bot.send_message(message.from_user.id, f"{message.from_user.first_name},вы выбрали команду для поиска "
+                                           f"бюджетных отелей. Чтобы продолжить введите город",
                      reply_markup=ReplyKeyboardRemove())
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["command"] = message.text
@@ -48,14 +49,9 @@ def choice_currency(call) -> None:
 def get_night_price(message: Message) -> None:
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["currency"] = message.text
-        if data["command"] == "/custom":
-            bot.send_message(message.from_user.id, f"Выбранная валюта: {message.text}. Введите минимальную цену",
-                             reply_markup=ReplyKeyboardRemove())
-            bot.set_state(message.from_user.id, UserInfoState.price_min, message.chat.id)
-        else:
-            bot.send_message(message.from_user.id, f"Выбранная валюта: {message.text}. Выберите дату заезда:",
-                             reply_markup=ReplyKeyboardRemove())
-            calendar_command(message)
+    bot.send_message(message.from_user.id, f"Выбранная валюта: {message.text}. Выберите дату заезда:",
+                     reply_markup=ReplyKeyboardRemove())
+    calendar_command(message)
 
 
 @bot.message_handler(state=UserInfoState.count)
@@ -83,33 +79,19 @@ def get_photo(message: Message) -> None:
     bot.send_message(message.from_user.id, "Вы указали следующие параметры: ", reply_markup=ReplyKeyboardRemove())
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["count_photo"] = message.text
-        if data["command"] == '/custom':
-            text = f"Город: {data['city']}\nДата заезда: {data['check_in']}\nДата выезда: {data['check_out']}\n" \
-                   f"Кол-во отелей: {data['count']}\nКол-во: {data['count_photo']}\n"\
-                   f"Диапазон расстояния: {data['distance_min']}-{data['distance_max']}\n" \
-                   f"Диапазон цен: {data['price_min']}-{data['price_max']}\n" \
-                   f"Команда: {data['command']}\n"
-            bot.send_message(message.from_user.id, text)
-            bot.send_message(message.from_user.id, "Выполняю поиск, пожалуйста, подождите...")
-            search(message, data)
-        else:
-            text = f"Город: {data['city']}\nДата заезда: {data['check_in']}\nДата выезда: {data['check_out']}\n"\
-                   f"Кол-во отелей: {data['count']}\nКол-во фото: {data['count_photo']}\n"\
-                   f"Команда: {data['command']}\n"
-            bot.send_message(message.from_user.id, text)
-            bot.send_message(message.from_user.id, "Выполняю поиск, пожалуйста подождите...")
-            search(message, data)
+    text = f"Город: {data['city']}\nДата заезда: {data['check_in']}\nДата выезда: {data['check_out']}\n" \
+           f"Кол-во отелей: {data['count']}\nКол-во фото: {data['count_photo']}\nКоманда: {data['command']}\n"
+    bot.send_message(message.from_user.id, text)
+    bot.send_message(message.from_user.id, "Выполняю поиск, пожалуйста подождите...")
+    search(message, data)
 
 
 def city_founding(city):
     url_search = "https://hotels4.p.rapidapi.com/locations/v2/search"
-    headers = {
-        "X-RapidAPI-Key": config.RAPID_API_KEY,
-        "X-RapidAPI-Host": "hotels4.p.rapidapi.com"
-    }
+
     querystring_search = {"query": city, "locale": "en_UK", "currency": "USD"}
 
-    response = requests.request("GET", url_search, headers=headers, params=querystring_search)
+    response = requests.request("GET", url_search, headers=config.headers, params=querystring_search)
     pattern = r'(?<="CITY_GROUP",).+?[\]]'
     find = re.search(pattern, response.text)
     if find:

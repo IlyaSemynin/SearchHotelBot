@@ -11,11 +11,11 @@ from handlers.custom_handlers.api_request import search
 from config_data import config
 
 
-@bot.message_handler(commands=["custom"])
+@bot.message_handler(commands=["high"])
 def start_script(message: Message) -> None:
     bot.set_state(message.from_user.id, UserInfoState.wait_city, message.chat.id)
-    bot.send_message(message.from_user.id, f"{message.from_user.first_name}, вы выбрали команду для расширенного "
-                                           f"поиска.Чтобы продолжить введите город",
+    bot.send_message(message.from_user.id, f"{message.from_user.first_name},вы выбрали команду для поиска "
+                                           f"дорогих отелей. Чтобы продолжить введите город",
                      reply_markup=ReplyKeyboardRemove())
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["command"] = message.text
@@ -47,45 +47,10 @@ def choice_currency(call) -> None:
 
 @bot.message_handler(state=UserInfoState.currency_selection)
 def get_night_price(message: Message) -> None:
-    bot.send_message(message.from_user.id, f"Выбранная валюта: {message.text}. Введите минимальную цену",
-                     reply_markup=ReplyKeyboardRemove())
-    bot.set_state(message.from_user.id, UserInfoState.price_min, message.chat.id)
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["currency"] = message.text
-
-
-@bot.message_handler(state=UserInfoState.price_min)
-def get_price_range(message: Message) -> None:
-    bot.send_message(message.from_user.id, f"Минимальная цена: {message.text}. "
-                                           f"Введите максимальную цену.")
-    bot.set_state(message.from_user.id, UserInfoState.price_max, message.chat.id)
-    with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
-        data["price_min"] = message.text
-
-
-@bot.message_handler(state=UserInfoState.price_max)
-def get_price_range(message: Message) -> None:
-    bot.send_message(message.from_user.id, f"Максимальная цена: {message.text}. "
-                                           f"Теперь введите минимальное расстояние от центра в киллометрах.")
-    bot.set_state(message.from_user.id, UserInfoState.distance_min, message.chat.id)
-    with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
-        data["price_max"] = message.text
-
-
-@bot.message_handler(state=UserInfoState.distance_min)
-def get_distance_range(message: Message) -> None:
-    bot.send_message(message.from_user.id, f"Минимальное расстояние: {message.text}. "
-                                           f"Введите максимальное расстояние от центра в киллометрах.")
-    bot.set_state(message.from_user.id, UserInfoState.distance_max, message.chat.id)
-    with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
-        data["distance_min"] = message.text
-
-
-@bot.message_handler(state=UserInfoState.distance_max)
-def get_distance_range(message: Message) -> None:
-    bot.send_message(message.from_user.id, f"Максимальное расстояние {message.text}. Выберите дату заезда")
-    with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
-        data["distance_max"] = message.text
+    bot.send_message(message.from_user.id, f"Выбранная валюта: {message.text}. Выберите дату заезда:",
+                     reply_markup=ReplyKeyboardRemove())
     calendar_command(message)
 
 
@@ -114,14 +79,10 @@ def get_photo(message: Message) -> None:
     bot.send_message(message.from_user.id, "Вы указали следующие параметры: ", reply_markup=ReplyKeyboardRemove())
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["count_photo"] = message.text
-
     text = f"Город: {data['city']}\nДата заезда: {data['check_in']}\nДата выезда: {data['check_out']}\n" \
-           f"Кол-во отелей: {data['count']}\nКол-во: {data['count_photo']}\n" \
-           f"Диапазон расстояния: {data['distance_min']}-{data['distance_max']}\n" \
-           f"Диапазон цен: {data['price_min']}-{data['price_max']}\n" \
-           f"Команда: {data['command']}\n"
+           f"Кол-во отелей: {data['count']}\nКол-во фото: {data['count_photo']}\nКоманда: {data['command']}\n"
     bot.send_message(message.from_user.id, text)
-    bot.send_message(message.from_user.id, "Выполняю поиск, пожалуйста, подождите...")
+    bot.send_message(message.from_user.id, "Выполняю поиск, пожалуйста подождите...")
     search(message, data)
 
 

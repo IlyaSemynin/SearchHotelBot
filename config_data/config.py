@@ -8,6 +8,7 @@ else:
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 RAPID_API_KEY = os.getenv("RAPID_API_KEY")
+
 DEFAULT_COMMANDS = (
     ("start", "Запустить бота"),
     ("help", "Вывести справку"),
@@ -16,3 +17,9 @@ DEFAULT_COMMANDS = (
     ('custom', 'Показать отели в пользовательском диапазоне'),
     ('history', 'показать историю запросов пользователя')
 )
+
+headers = {
+    "content-type": "application/json",
+    "X-RapidAPI-Key": os.getenv("RAPID_API_KEY"),
+    "X-RapidAPI-Host": "hotels4.p.rapidapi.com"
+}
