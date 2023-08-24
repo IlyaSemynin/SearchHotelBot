@@ -14,8 +14,8 @@ from config_data import config
 @bot.message_handler(commands=["high"])
 def start_script(message: Message) -> None:
     bot.set_state(message.from_user.id, UserInfoState.wait_city, message.chat.id)
-    bot.send_message(message.from_user.id, f"{message.from_user.first_name},вы выбрали команду для поиска "
-                                           f"дорогих отелей. Чтобы продолжить введите город",
+    bot.send_message(message.from_user.id, f"{message.from_user.first_name},вы выбрали команду для поиска дорогих "
+                                           f"отелей. Чтобы продолжить введите город",
                      reply_markup=ReplyKeyboardRemove())
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["command"] = message.text

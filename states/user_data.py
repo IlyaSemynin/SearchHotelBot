@@ -26,6 +26,7 @@ class UserInfoState(StatesGroup):
     clean_history = State()
 
 
+
 class DateRangeState(StatesGroup):
     check_in = State
     check_out = State

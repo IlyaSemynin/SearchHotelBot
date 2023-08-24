@@ -1,3 +1,6 @@
+import json
+import re
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from loader import bot
 from states.user_data import UserInfoState
 from telebot.types import Message
@@ -6,6 +9,36 @@ from database.history_class import History
 from datetime import datetime
 from config_data import config
 import requests
+
+
+def city_founding(city):
+    url_search = "https://hotels4.p.rapidapi.com/locations/v2/search"
+
+    querystring_search = {"query": city, "locale": "en_UK", "currency": "USD"}
+
+    response = requests.request("GET", url_search, headers=config.headers, params=querystring_search)
+    pattern = r'(?<="CITY_GROUP",).+?[\]]'
+    find = re.search(pattern, response.text)
+    if find:
+        suggestions = json.loads(f"{{{find[0]}}}")
+
+    cities = list()
+    for dest_id in suggestions['entities']:
+        clear = r'<.*?>|</.*?>'
+        clear_destination = re.sub(clear, '', dest_id['caption'])
+        cities.append({'city_name': clear_destination, 'destination_id': dest_id['destinationId']})
+    return cities
+
+
+def city_markup(city):
+    cities = city_founding(city)
+    destinations = InlineKeyboardMarkup()
+    for city in cities:
+        exact_location = list()
+        exact_location.append(city['city_name'].split(','))
+        txt = ''.join(exact_location[0][0:2])
+        destinations.add(InlineKeyboardButton(text=txt, callback_data=txt))
+    return destinations
 
 
 def request_to_api(url, headers, querystring):
@@ -84,6 +117,7 @@ def lowprice(result_dict, count, message, data) -> None:
                                 f"Расстояние до центра: {go_centre}\n"
                                 f"Цена за период: {price}\n")
             bot.send_message(message.from_user.id, text)
+
             try:
                 if data['count_photo'] != 'Нет':
                     media = get_photo_link(result_dict[id]['img'], data)
@@ -118,6 +152,7 @@ def highprice(result_dict, count, message, data) -> None:
                                 f"Расстояние до центра: {go_centre}\n"
                                 f"Цена за период: {price}\n")
             bot.send_message(message.from_user.id, text)
+
             try:
                 if data['count_photo'] != 'Нет':
                     media = get_photo_link(result_dict[id]['img'], data)
@@ -186,10 +221,6 @@ def search(message: Message, data) -> None:
     bot.set_state(message.from_user.id, UserInfoState.search, message.chat.id)
     url_search = "https://hotels4.p.rapidapi.com/locations/v3/search"
     querystring = {"q": data['city'], "locale": "en_US", "langid": "1033", "siteid": "300000001"}
-    # headers = {
-    #     "X-RapidAPI-Key": config.RAPID_API_KEY,
-    #     "X-RapidAPI-Host": "hotels4.p.rapidapi.com"
-    # }
 
     response_search = request_to_api(url_search, config.headers, querystring)
     try:
@@ -237,11 +268,6 @@ def search(message: Message, data) -> None:
         }
     }
 
-    # headers = {
-    #     "content-type": "application/json",
-    #     "X-RapidAPI-Key": config.RAPID_API_KEY,
-    #     "X-RapidAPI-Host": "hotels4.p.rapidapi.com"
-    # }
     response_list = requests.request("POST", url_list, json=payload, headers=config.headers)
     try:
         data_list = response_list.json()

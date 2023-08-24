@@ -1,3 +1,4 @@
+from loguru import logger
 from keyboards.reply.buttons import count_hotel_button
 from loader import bot
 from states.user_data import UserInfoState, DateRangeState
@@ -56,10 +57,10 @@ def handle_arrival_date(call: CallbackQuery):
     elif result:
         with bot.retrieve_data(call.from_user.id, call.message.chat.id) as data:
             data['check_in'] = result  # Дата выбрана, сохраняем ее
-
             bot.edit_message_text(f"Дата заезда {result}",
                                   call.message.chat.id,
                                   call.message.message_id)
+            logger.info(f"Выбрана дата заезда: {data['check_in']}")
 
             bot.send_message(call.from_user.id, "Выберите дату выезда")
             calendar, step = get_calendar(calendar_id=2,
@@ -99,5 +100,6 @@ def handle_departure_date(call: CallbackQuery):
             bot.edit_message_text(f"Дата выезда {result}",
                                   call.message.chat.id,
                                   call.message.message_id)
+            logger.info(f"Выбрана дата выезда: {data['check_out']}")
             bot.send_message(call.from_user.id, "Выберите количество отелей", reply_markup=count_hotel_button())
             bot.set_state(call.from_user.id, UserInfoState.count, call.message.chat.id)
