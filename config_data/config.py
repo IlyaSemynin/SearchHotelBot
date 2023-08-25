@@ -23,3 +23,4 @@ headers = {
     "X-RapidAPI-Key": os.getenv("RAPID_API_KEY"),
     "X-RapidAPI-Host": "hotels4.p.rapidapi.com"
 }
+

@@ -82,9 +82,9 @@ def get_address_and_rate_and_photo(hotel_id: str) -> list:
 
     response = requests.request("POST", url, json=payload, headers=config.headers).json()
 
-    return [response['data']['propertyInfo']['summary']['location']['address']['addressLine'],
-            response['data']['propertyInfo']['summary']['overview']['propertyRating']['rating'],
-            response['data']['propertyInfo']['propertyGallery']['images']]
+    return [response['data']['propertyInfo']['summary']['location']['address']['addressLine'], response['data'][
+        'propertyInfo']['summary']['overview']['propertyRating']['rating'], response['data']['propertyInfo'][
+        'propertyGallery']['images']]
 
 
 def get_result_dict(entities_list, result_dict):
@@ -218,6 +218,7 @@ def get_photo_link(images: list, data) -> list:
 
 
 def search(message: Message, data) -> None:
+    global data_list
     bot.set_state(message.from_user.id, UserInfoState.search, message.chat.id)
     url_search = "https://hotels4.p.rapidapi.com/locations/v3/search"
     querystring = {"q": data['city'], "locale": "en_US", "langid": "1033", "siteid": "300000001"}

@@ -12,15 +12,15 @@ from handlers.custom_handlers.api_request import city_markup
 def low_price(message: Message) -> None:
     """
     Обработчик команды low. Запрашивает у пользователя город для поиска отелей
+    и осуществляет поиск бюджетных вариантов в выбранном городе.
     :param message: Message
     :return: None
     """
     bot.set_state(message.from_user.id, UserInfoState.wait_city, message.chat.id)
-    bot.send_message(message.from_user.id, f"{message.from_user.first_name},вы выбрали команду для поиска "
+    bot.send_message(message.from_user.id, f"{message.from_user.first_name}, вы выбрали команду для поиска "
                                            f"бюджетных отелей. Чтобы продолжить введите город",
                      reply_markup=ReplyKeyboardRemove())
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
-        data.clear()
         logger.info('Пользователь выбрал команду: ' + message.text + f" User_id: {message.chat.id}")
         data["command"] = message.text
         data["user_id"] = message.from_user.id
@@ -29,8 +29,7 @@ def low_price(message: Message) -> None:
 @bot.message_handler(state=UserInfoState.wait_city)
 def wait_city(message: Message) -> None:
     """
-    Уточняем, в каком именно городе пользователь хочет найти отель при помощи клавиатуры
-
+    Уточняем у пользователя при помощи клавиатуры в каком именно городе он хочет найти отель.
     :param message: Message
     :return: None
     """
@@ -52,7 +51,7 @@ def get_city(call) -> None:
     if call.message:
         with bot.retrieve_data(call.from_user.id, call.message.chat.id) as data:
             data['city'] = call.data
-            logger.info('Был выбран город: ' + call.data)
+            logger.info(f"Был выбран город:  {call.data}")
         choice_currency(call)
 
 
@@ -68,6 +67,11 @@ def choice_currency(call) -> None:
 
 @bot.message_handler(state=UserInfoState.currency_selection)
 def get_night_price(message: Message) -> None:
+    """
+    Сохраняем выбранную валюту, и запрашиваем у пользователя дату заезда при помощи календаря.
+    :param message: Message
+    :return: None
+    """
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["currency"] = message.text
         logger.info('Выбрана валюта: ' + data["currency"])
@@ -78,6 +82,11 @@ def get_night_price(message: Message) -> None:
 
 @bot.message_handler(state=UserInfoState.count)
 def get_count(message: Message) -> None:
+    """
+    Сохраняем кол-во отелей и запрашиваем у пользователя нужны ли ему фото отелей при помощи кнопок"
+    :param message: Message
+    :return: None
+    """""
     bot.send_message(message.from_user.id, f"Выбранное кол-во отелей: {message.text}. Нужны ли фото отелей?",
                      reply_markup=yes_or_no_button())
     bot.set_state(message.from_user.id, UserInfoState.photo_count, message.chat.id)
@@ -88,6 +97,11 @@ def get_count(message: Message) -> None:
 
 @bot.message_handler(state=UserInfoState.photo_count)
 def get_photo_count(message: Message) -> None:
+    """
+    Если пользователю нужны фото, то уточняем их кол-во, иначе не предоставляем фото
+    :param message: Message
+    :return: None
+    """
     if message.text.lower() == 'да':
         bot.send_message(message.from_user.id, 'Выберите кол-во фото на каждый отель',
                          reply_markup=photo_count_keyboard())
@@ -101,6 +115,11 @@ def get_photo_count(message: Message) -> None:
 
 @bot.message_handler(state=UserInfoState.photo)
 def get_photo(message: Message) -> None:
+    """
+    Выводим всю собранную информацию в чат бота и выполняем поиск отелей
+    :param message: Message
+    :return: None
+    """
     bot.send_message(message.from_user.id, "Вы указали следующие параметры: ", reply_markup=ReplyKeyboardRemove())
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["count_photo"] = message.text
@@ -110,4 +129,3 @@ def get_photo(message: Message) -> None:
     bot.send_message(message.from_user.id, text)
     bot.send_message(message.from_user.id, "Выполняю поиск, пожалуйста подождите...")
     search(message, data)
-

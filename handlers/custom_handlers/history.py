@@ -8,6 +8,11 @@ from database.history_class import History
 
 @bot.message_handler(commands=["history"])
 def view_history(message: Message) -> None:
+    """
+    Обработчик команды history. Выводит в чат историю поиска полученную из БД.
+    :param message: Message
+    :return: None
+    """
     history_dict = History("bot_history.sqlite", str(message.from_user.id))
     count = history_dict.count
     bot.set_state(message.from_user.id, UserInfoState.clean_history, message.chat.id)
@@ -32,6 +37,11 @@ def view_history(message: Message) -> None:
 
 @bot.message_handler(state=UserInfoState.clean_history)
 def clean_history(message: Message) -> None:
+    """
+    Функция для очистки истории сообщений.
+    :param message:
+    :return:
+    """
     try:
         bot.delete_state(message.from_user.id)
         os.unlink("bot_history.sqlite")
