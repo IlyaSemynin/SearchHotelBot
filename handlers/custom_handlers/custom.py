@@ -27,7 +27,7 @@ def custom(message: Message) -> None:
 
 
 @bot.message_handler(state=UserInfoState.wait_city)
-def wait_city(message: Message) -> None:
+def custom_wait_city(message: Message) -> None:
     """
     Уточняем у пользователя при помощи клавиатуры в каком именно городе он хочет найти отель.
     :param message: Message
@@ -35,14 +35,15 @@ def wait_city(message: Message) -> None:
     """
     bot.set_state(message.from_user.id, UserInfoState.city, message.chat.id)
     try:
-        bot.send_message(message.from_user.id, "Уточните название города:", reply_markup=city_markup(message.text))
+        bot.send_message(message.from_user.id, "Уточните название города(custom)", reply_markup=city_markup(
+            message.text))
     except:
         bot.send_message(message.from_user.id, "Что-то пошло не так, повторите попытку")
         bot.delete_state(message.from_user.id)
 
 
 @bot.callback_query_handler(func=lambda call: True)
-def get_city(call) -> None:
+def custom_get_city(call) -> None:
     """
     Обрабатываем callback-запрос после нажатия пользователем на кнопку с городом и запоминаем выбранный город.
     :param call: Message
@@ -52,10 +53,10 @@ def get_city(call) -> None:
         with bot.retrieve_data(call.from_user.id, call.message.chat.id) as data:
             data['city'] = call.data
             logger.info('Был выбран город: ' + call.data)
-        choice_currency(call)
+        custom_choice_currency(call)
 
 
-def choice_currency(call) -> None:
+def custom_choice_currency(call) -> None:
     """
     Обрабатываем выбор пользователем валюты для оплаты.
     :param call: Message
@@ -66,7 +67,7 @@ def choice_currency(call) -> None:
 
 
 @bot.message_handler(state=UserInfoState.currency_selection)
-def get_night_price(message: Message) -> None:
+def custom_get_night_price(message: Message) -> None:
     """
     Сохраняем выбранную валюту, и запрашиваем у пользователя минимальную цену проживания.
     Актуально только если пользователь выбрал команду custom.
@@ -82,7 +83,7 @@ def get_night_price(message: Message) -> None:
 
 
 @bot.message_handler(state=UserInfoState.price_min)
-def get_price_range(message: Message) -> None:
+def custom_get_price_range(message: Message) -> None:
     """
     Сохраняем минимальный прайс за проживание, и запрашиваем у пользователя максимальную цену проживания.
     Актуально только если пользователь выбрал команду custom.
@@ -98,7 +99,7 @@ def get_price_range(message: Message) -> None:
 
 
 @bot.message_handler(state=UserInfoState.price_max)
-def get_price_range(message: Message) -> None:
+def custom_get_price_range_max(message: Message) -> None:
     """
     Сохраняем максимальный прайс за проживание, и запрашиваем минимально желаемую отдалённость отеля от центра города.
     Актуально только если пользователь выбрал команду custom.
@@ -114,7 +115,7 @@ def get_price_range(message: Message) -> None:
 
 
 @bot.message_handler(state=UserInfoState.distance_min)
-def get_distance_range(message: Message) -> None:
+def custom_get_distance_range(message: Message) -> None:
     """
     Сохраняем минимальное расстояние от центра, и запрашиваем максимальную отдалённость отеля от центра города.
     Актуально только если пользователь выбрал команду custom.
@@ -130,7 +131,7 @@ def get_distance_range(message: Message) -> None:
 
 
 @bot.message_handler(state=UserInfoState.distance_max)
-def get_distance_range(message: Message) -> None:
+def custom_get_distance_range_max(message: Message) -> None:
     """
     Сохраняем максимальное расстояние от центра, и запрашиваем у пользователя дату заезда при помощи календаря.
     Актуально только если пользователь выбрал команду custom.
@@ -145,7 +146,7 @@ def get_distance_range(message: Message) -> None:
 
 
 @bot.message_handler(state=UserInfoState.count)
-def get_count(message: Message) -> None:
+def custom_get_count(message: Message) -> None:
     """
     Сохраняем кол-во отелей и запрашиваем у пользователя нужны ли ему фото отелей при помощи кнопок."
     :param message: Message
@@ -160,7 +161,7 @@ def get_count(message: Message) -> None:
 
 
 @bot.message_handler(state=UserInfoState.photo_count)
-def get_photo_count(message: Message) -> None:
+def custom_get_photo_count(message: Message) -> None:
     """
     Если пользователю нужны фото, то уточняем их кол-во, иначе не предоставляем фото.
     :param message: Message
@@ -173,12 +174,12 @@ def get_photo_count(message: Message) -> None:
         logger.info("Фотографии отеля? Да!")
     elif message.text.lower() == 'нет':
         bot.set_state(message.from_user.id, UserInfoState.photo, message.chat.id)
-        get_photo(message)
+        custom_get_photo(message)
         logger.info("Фотографии отеля? Нет!")
 
 
 @bot.message_handler(state=UserInfoState.photo)
-def get_photo(message: Message) -> None:
+def custom_get_photo(message: Message) -> None:
     """
     Выводим всю собранную информацию в чат бота и выполняем поиск отелей.
     :param message: Message

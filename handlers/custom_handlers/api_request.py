@@ -12,6 +12,7 @@ import requests
 
 
 def city_founding(city):
+    global suggestions
     url_search = "https://hotels4.p.rapidapi.com/locations/v2/search"
 
     querystring_search = {"query": city, "locale": "en_UK", "currency": "USD"}

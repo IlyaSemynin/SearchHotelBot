@@ -1,7 +1,7 @@
 from loguru import logger
 from keyboards.reply.buttons import count_hotel_button
 from loader import bot
-from states.user_data import UserInfoState, DateRangeState
+from states.user_data import UserInfoState, DateRangeState, LowPriceInfoState, HighPriceInfoState
 from telebot.types import Message, CallbackQuery
 from telegram_bot_calendar import DetailedTelegramCalendar
 from datetime import date, timedelta
@@ -102,4 +102,12 @@ def handle_departure_date(call: CallbackQuery):
                                   call.message.message_id)
             logger.info(f"Выбрана дата выезда: {data['check_out']}")
             bot.send_message(call.from_user.id, "Выберите количество отелей", reply_markup=count_hotel_button())
-            bot.set_state(call.from_user.id, UserInfoState.count, call.message.chat.id)
+
+            if data['command'] == '/low':
+                bot.set_state(call.from_user.id, LowPriceInfoState.count, call.message.chat.id)
+            elif data['command'] == '/high':
+                bot.set_state(call.from_user.id, HighPriceInfoState.count, call.message.chat.id)
+            else:
+                bot.set_state(call.from_user.id, UserInfoState.count, call.message.chat.id)
+
+
