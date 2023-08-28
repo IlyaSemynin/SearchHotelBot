@@ -18,9 +18,16 @@ DEFAULT_COMMANDS = (
     ('history', 'показать историю запросов пользователя')
 )
 
-headers = {
+HEADERS = {
     "content-type": "application/json",
     "X-RapidAPI-Key": os.getenv("RAPID_API_KEY"),
     "X-RapidAPI-Host": "hotels4.p.rapidapi.com"
 }
 
+# PAYLOAD = {
+#     "currency": "USD",
+#     "eapid": 1,
+#     "locale": "en_US",
+#     "siteId": 300000001,
+#     "propertyId": None
+# }

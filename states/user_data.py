@@ -3,6 +3,7 @@ from telebot.handler_backends import State, StatesGroup
 
 class LowPriceInfoState(StatesGroup):
     wait_city = State()
+    destination_id = State()
     city = State()
     currency_selection = State()
     count = State()
