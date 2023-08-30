@@ -1,24 +1,4 @@
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
-from loader import bot
-from telebot import types
-from loguru import logger
-from telebot.types import Message, Dict
-
-
-def show_cities_buttons(message: Message, possible_cities: Dict):
-    """
-    Функция, из словаря возможных городов, формирует клавиатуру с вариантами городов, и посылает её в чат.
-    : param message : Message
-    : param possible_cities : Dict словарь, с возможными вариантами городов
-    : return : None
-    """
-    logger.info(f'Вывод кнопок с вариантами городов пользователю. User_id: {message.chat.id}')
-    keyboards_cities = types.InlineKeyboardMarkup()
-    for key, value in possible_cities.items():
-        keyboards_cities.add(types.InlineKeyboardButton(text=value["regionNames"], callback_data=value["gaiaId"]))
-
-    return keyboards_cities
-    # bot.send_message(message.from_user.id, "Пожалуйста, выберите город", reply_markup=keyboards_cities)
 
 
 def count_hotel_button() -> ReplyKeyboardMarkup:
@@ -64,4 +44,3 @@ def delete_history() -> ReplyKeyboardMarkup:
     keyboard = ReplyKeyboardMarkup()
     keyboard.add((KeyboardButton("Очистить историю")))
     return keyboard
-

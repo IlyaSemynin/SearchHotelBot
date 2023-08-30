@@ -4,8 +4,8 @@ from keyboards.reply.buttons import yes_or_no_button, currency, photo_count_keyb
 from states.user_data import LowPriceInfoState, UserInfoState
 from telebot.types import Message, ReplyKeyboardRemove
 from handlers.custom_handlers.calendar import calendar_command
-from handlers.custom_handlers.api_request import search
-from handlers.custom_handlers.api_request import city_markup
+from utils.api_request import search
+from utils.api_request import city_markup
 
 
 @bot.message_handler(commands=["low"])

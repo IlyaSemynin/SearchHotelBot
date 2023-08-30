@@ -1,7 +1,13 @@
-pyTelegramBotAPI==4.9.0
-python-dateutil==2.8.2
-python-dotenv==0.21.1
-python-telegram-bot-calendar==1.0.5
-requests==2.31.0
+pyTelegramBotAPI==4.9.0<br>
+python-dotenv==0.21.1<br>
+pip==22.0.4<br>
+certifi==2023.7.22<br>
+requests==2.31.0<br>
+idna==3.4<br>
+urllib3==2.0.4<br>
+setuptools==58.1.0<br>
+loguru==0.7.0<br>
 sqlitedict==2.1.0
+python-telegram-bot-calendar==1.0.5
+python-dateutil==2.8.2
 

@@ -1,5 +1,6 @@
 import json
 import re
+from typing import Any
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from loader import bot
 from states.user_data import UserInfoState
@@ -11,7 +12,12 @@ from config_data import config
 import requests
 
 
-def city_founding(city):
+def city_founding(city: Any) -> list:
+    """
+    Получение списка с возможными вариантами городов для дальнейшего формирования клавиатуры
+    :param city: Any
+    :return: List
+    """
 
     url_search = "https://hotels4.p.rapidapi.com/locations/v2/search"
 
@@ -31,7 +37,12 @@ def city_founding(city):
         return cities
 
 
-def city_markup(city):
+def city_markup(city: Any) -> InlineKeyboardMarkup:
+    """
+    Функция для формирования клавиатуры с вариантами городов.
+    :param city: Any
+    :return: InlineKeyboardMarkup
+    """
     cities = city_founding(city)
     destinations = InlineKeyboardMarkup()
     for city in cities:
@@ -53,13 +64,16 @@ def cleaner(string: str) -> float:
 
 
 def get_address_and_rate_and_photo(hotel_id: str) -> list:
+    """
+    Формирование запросов на поиск отелей, и детальной информации о них (адрес, фотографии).
+    :param hotel_id: str
+    :return: list
+    """
+
     url = "https://hotels4.p.rapidapi.com/properties/v2/detail"
-    # payload = config.PAYLOAD["propertyId"] = hotel_id
+
     payload = {
-        "currency": "USD",
-        "eapid": 1,
-        "locale": "en_US",
-        "siteId": 300000001,
+        **config.PAYLOAD,
         "propertyId": hotel_id
     }
 
@@ -81,7 +95,15 @@ def get_result_dict(entities_list, result_dict):
                                           'img': res_rate_photo[2]}})
 
 
-def low_and_high_price(result_dict, count, message, data) -> None:
+def low_and_high_price(result_dict: dict, count: int, message: Message, data: Any) -> None:
+    """
+    Функция для применения сортировки для команд low & high, вывода информации и записи в БД.
+    :param result_dict: dict
+    :param count: int
+    :param message: Message
+    :param data: Any
+    :return: None
+    """
     history_list = list()
     sort_list = sorted([(hotel, result_dict[hotel]["price"]) for hotel in result_dict], key=lambda x: x[1],
                        reverse=False)
@@ -116,7 +138,15 @@ def low_and_high_price(result_dict, count, message, data) -> None:
             break
 
 
-def custom(result_dict, count, message, data) -> None:
+def custom(result_dict: dict, count: int, message: Message, data: Any) -> None:
+    """
+    Функция для применения сортировки для команды custom, вывода информации и записи в БД.
+    :param result_dict: dict
+    :param count: int
+    :param message: Message
+    :param data: Any
+    :return: None
+    """
     history_list = list()
     sort_price = sorted([(hotel, result_dict[hotel]["price"]) for hotel in result_dict if (
                 int(data['price_min']) <= cleaner(result_dict[hotel]['price']) <= int(data['price_max']))],
@@ -179,6 +209,11 @@ gaia_id = list()
 
 
 def get_region_id(response_search: dict) -> List:
+    """
+    Функция для добавления id города как элемент списка gaia_id
+    :param response_search: dict
+    :return: list
+    """
     for j in response_search['sr']:
         if j['@type'] == 'gaiaRegionResult':
             gaia_id.append(j['gaiaId'])
@@ -186,6 +221,13 @@ def get_region_id(response_search: dict) -> List:
 
 
 def search(message: Message, data) -> None:
+    """
+    Отправка запроса на сервер для поиска вариантов города, после того как его ввёл пользователь.
+    Далее функция предоставляет ответ с информацией по отелям: id отеля, название, цена. Ожидает от вас id локации.
+    :param data: None
+    :param message: Message
+    :return: None
+    """
     data_list = dict()
     bot.set_state(message.from_user.id, UserInfoState.search, message.chat.id)
     url_search = "https://hotels4.p.rapidapi.com/locations/v3/search"
@@ -241,10 +283,9 @@ def search(message: Message, data) -> None:
 
     try:
         data_list = response_list.json()
-        print(type(data_list))
 
     except AttributeError:
-        print('error')
+        print('Error')
 
     entities_list = data_list["data"]["propertySearch"]["properties"]
     get_result_dict(entities_list, result_dict)

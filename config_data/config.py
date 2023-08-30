@@ -15,7 +15,7 @@ DEFAULT_COMMANDS = (
     ('low', 'Показать бюджетные отели в городе'),
     ('high', 'Показать дорогие отели в городе'),
     ('custom', 'Показать отели в пользовательском диапазоне'),
-    ('history', 'показать историю запросов пользователя')
+    ('history', 'Показать историю запросов пользователя')
 )
 
 HEADERS = {
@@ -24,10 +24,9 @@ HEADERS = {
     "X-RapidAPI-Host": "hotels4.p.rapidapi.com"
 }
 
-# PAYLOAD = {
-#     "currency": "USD",
-#     "eapid": 1,
-#     "locale": "en_US",
-#     "siteId": 300000001,
-#     "propertyId": None
-# }
+PAYLOAD = {
+    "currency": "USD",
+    "eapid": 1,
+    "locale": "en_US",
+    "siteId": 300000001,
+}
