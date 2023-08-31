@@ -8,4 +8,3 @@ storage = StateMemoryStorage()
 
 # Создаем сам объект бота
 bot = TeleBot(token=config.BOT_TOKEN, state_storage=storage)
-

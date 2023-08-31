@@ -9,5 +9,3 @@ if __name__ == "__main__":
     bot.add_custom_filter(StateFilter(bot))
     set_default_commands(bot)  # установка в кнопку "Меню" команд
     bot.infinity_polling()  # бесконечный запуск бота
-
-

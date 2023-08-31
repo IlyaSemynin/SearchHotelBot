@@ -143,4 +143,3 @@ def handle_departure_date(call: CallbackQuery):
                 bot.set_state(
                     call.from_user.id, UserInfoState.count, call.message.chat.id
                 )
-

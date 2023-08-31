@@ -49,4 +49,3 @@ class History:
 
     def close(self):
         self.db.close()
-

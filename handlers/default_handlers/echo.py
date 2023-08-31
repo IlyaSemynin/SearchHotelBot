@@ -15,4 +15,3 @@ def bot_echo(message: Message):
         f"Привет, {message.from_user.full_name}!"
         f"\nЧтобы начать, выбери команду воспользовавшись кнопкой 'Меню'",
     )
-
