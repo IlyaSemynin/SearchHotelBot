@@ -45,3 +45,5 @@ class UserInfoState(StatesGroup):
 class DateRangeState(StatesGroup):
     check_in = State
     check_out = State
+
+

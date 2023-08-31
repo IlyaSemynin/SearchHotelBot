@@ -44,3 +44,4 @@ def delete_history() -> ReplyKeyboardMarkup:
     keyboard = ReplyKeyboardMarkup()
     keyboard.add((KeyboardButton("Очистить историю")))
     return keyboard
+
