@@ -12,16 +12,16 @@ RAPID_API_KEY = os.getenv("RAPID_API_KEY")
 DEFAULT_COMMANDS = (
     ("start", "Запустить бота"),
     ("help", "Вывести справку"),
-    ('low', 'Показать бюджетные отели в городе'),
-    ('high', 'Показать дорогие отели в городе'),
-    ('custom', 'Показать отели в пользовательском диапазоне'),
-    ('history', 'Показать историю запросов пользователя')
+    ("low", "Показать бюджетные отели в городе"),
+    ("high", "Показать дорогие отели в городе"),
+    ("custom", "Показать отели в пользовательском диапазоне"),
+    ("history", "Показать историю запросов пользователя"),
 )
 
 HEADERS = {
     "content-type": "application/json",
     "X-RapidAPI-Key": os.getenv("RAPID_API_KEY"),
-    "X-RapidAPI-Host": "hotels4.p.rapidapi.com"
+    "X-RapidAPI-Host": "hotels4.p.rapidapi.com",
 }
 
 PAYLOAD = {

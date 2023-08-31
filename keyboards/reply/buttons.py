@@ -4,11 +4,11 @@ from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 def count_hotel_button() -> ReplyKeyboardMarkup:
     """Кнопки для кол-ва выводимых отелей"""
     keyboard = ReplyKeyboardMarkup()
-    keyboard.add(KeyboardButton('1'))
-    keyboard.add(KeyboardButton('2'))
-    keyboard.add(KeyboardButton('3'))
-    keyboard.add(KeyboardButton('4'))
-    keyboard.add(KeyboardButton('5'))
+    keyboard.add(KeyboardButton("1"))
+    keyboard.add(KeyboardButton("2"))
+    keyboard.add(KeyboardButton("3"))
+    keyboard.add(KeyboardButton("4"))
+    keyboard.add(KeyboardButton("5"))
     return keyboard
 
 

@@ -10,5 +10,8 @@ def bot_echo(message: Message):
     :param message: Message
     :return: None
     """
-    bot.reply_to(message, f"Привет, {message.from_user.full_name}!"
-                          f"\nЧтобы начать, выбери команду воспользовавшись кнопкой 'Меню'")
+    bot.reply_to(
+        message,
+        f"Привет, {message.from_user.full_name}!"
+        f"\nЧтобы начать, выбери команду воспользовавшись кнопкой 'Меню'",
+    )

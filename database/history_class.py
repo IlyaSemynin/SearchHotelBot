@@ -11,7 +11,12 @@ class History:
 
     def fill(self, user_id, command, date, hotels):
         """Заполнение БД"""
-        self.db[self.count] = {"user_id": user_id, "command": command, "date": date, "hotels": hotels}
+        self.db[self.count] = {
+            "user_id": user_id,
+            "command": command,
+            "date": date,
+            "hotels": hotels,
+        }
         self.db.commit()
 
     def get_count(self):
@@ -44,4 +49,3 @@ class History:
 
     def close(self):
         self.db.close()
-

@@ -17,11 +17,18 @@ def custom(message: Message) -> None:
     :return: None
     """
     bot.set_state(message.from_user.id, UserInfoState.wait_city, message.chat.id)
-    bot.send_message(message.from_user.id, f"{message.from_user.first_name}, вы выбрали команду для расширенного "
-                                           f"поиска.Чтобы продолжить введите город",
-                     reply_markup=ReplyKeyboardRemove())
+    bot.send_message(
+        message.from_user.id,
+        f"{message.from_user.first_name}, вы выбрали команду для расширенного "
+        f"поиска.Чтобы продолжить введите город",
+        reply_markup=ReplyKeyboardRemove(),
+    )
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
-        logger.info('Пользователь выбрал команду: ' + message.text + f" User_id: {message.chat.id}")
+        logger.info(
+            "Пользователь выбрал команду: "
+            + message.text
+            + f" User_id: {message.chat.id}"
+        )
         data["command"] = message.text
         data["user_id"] = message.from_user.id
 
@@ -35,8 +42,11 @@ def custom_wait_city(message: Message) -> None:
     """
     bot.set_state(message.from_user.id, UserInfoState.city, message.chat.id)
     try:
-        bot.send_message(message.from_user.id, "Уточните название города(custom)", reply_markup=city_markup(
-            message.text))
+        bot.send_message(
+            message.from_user.id,
+            "Уточните название города(custom)",
+            reply_markup=city_markup(message.text),
+        )
     except:
         bot.send_message(message.from_user.id, "Что-то пошло не так, повторите попытку")
         bot.delete_state(message.from_user.id)
@@ -51,8 +61,8 @@ def custom_get_city(call) -> None:
     """
     if call.message:
         with bot.retrieve_data(call.from_user.id, call.message.chat.id) as data:
-            data['city'] = call.data
-            logger.info('Был выбран город: ' + call.data)
+            data["city"] = call.data
+            logger.info("Был выбран город: " + call.data)
         custom_choice_currency(call)
 
 
@@ -62,8 +72,14 @@ def custom_choice_currency(call) -> None:
     :param call: Message
     :return: None
     """
-    bot.send_message(call.from_user.id, f"Выбранный город: {call.data}. Выберите валюту:", reply_markup=currency())
-    bot.set_state(call.from_user.id, UserInfoState.currency_selection, call.message.chat.id)
+    bot.send_message(
+        call.from_user.id,
+        f"Выбранный город: {call.data}. Выберите валюту:",
+        reply_markup=currency(),
+    )
+    bot.set_state(
+        call.from_user.id, UserInfoState.currency_selection, call.message.chat.id
+    )
 
 
 @bot.message_handler(state=UserInfoState.currency_selection)
@@ -74,8 +90,11 @@ def custom_get_night_price(message: Message) -> None:
     :param message: Message
     :return: None
     """
-    bot.send_message(message.from_user.id, f"Выбранная валюта: {message.text}. Введите минимальную цену",
-                     reply_markup=ReplyKeyboardRemove())
+    bot.send_message(
+        message.from_user.id,
+        f"Выбранная валюта: {message.text}. Введите минимальную цену",
+        reply_markup=ReplyKeyboardRemove(),
+    )
     bot.set_state(message.from_user.id, UserInfoState.price_min, message.chat.id)
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["currency"] = message.text
@@ -90,8 +109,10 @@ def custom_get_price_range(message: Message) -> None:
     :param message: Message
     :return: None
     """
-    bot.send_message(message.from_user.id, f"Минимальная цена: {message.text}. "
-                                           f"Введите максимальную цену.")
+    bot.send_message(
+        message.from_user.id,
+        f"Минимальная цена: {message.text}. " f"Введите максимальную цену.",
+    )
     bot.set_state(message.from_user.id, UserInfoState.price_max, message.chat.id)
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["price_min"] = message.text
@@ -106,8 +127,11 @@ def custom_get_price_range_max(message: Message) -> None:
     :param message: Message
     :return: None
     """
-    bot.send_message(message.from_user.id, f"Максимальная цена: {message.text}. "
-                                           f"Теперь введите минимальную отдалённость от центра (в км).")
+    bot.send_message(
+        message.from_user.id,
+        f"Максимальная цена: {message.text}. "
+        f"Теперь введите минимальную отдалённость от центра (в км).",
+    )
     bot.set_state(message.from_user.id, UserInfoState.distance_min, message.chat.id)
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["price_max"] = message.text
@@ -122,8 +146,11 @@ def custom_get_distance_range(message: Message) -> None:
     :param message: Message
     :return: None
     """
-    bot.send_message(message.from_user.id, f"Минимальное расстояние: {message.text}. "
-                                           f"Введите максимальное расстояние от центра (в км).")
+    bot.send_message(
+        message.from_user.id,
+        f"Минимальное расстояние: {message.text}. "
+        f"Введите максимальное расстояние от центра (в км).",
+    )
     bot.set_state(message.from_user.id, UserInfoState.distance_max, message.chat.id)
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["distance_min"] = message.text
@@ -138,7 +165,10 @@ def custom_get_distance_range_max(message: Message) -> None:
     :param message: Message
     :return: None
     """
-    bot.send_message(message.from_user.id, f"Максимальное расстояние {message.text}. Выберите дату заезда")
+    bot.send_message(
+        message.from_user.id,
+        f"Максимальное расстояние {message.text}. Выберите дату заезда",
+    )
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["distance_max"] = message.text
         logger.info(f"Максимальное расстояние от центра: {data['distance_max']}")
@@ -151,9 +181,12 @@ def custom_get_count(message: Message) -> None:
     Сохраняем кол-во отелей и запрашиваем у пользователя нужны ли ему фото отелей при помощи кнопок."
     :param message: Message
     :return: None
-    """""
-    bot.send_message(message.from_user.id, f"Выбранное кол-во отелей: {message.text}. Нужны ли фото отелей?",
-                     reply_markup=yes_or_no_button())
+    """ ""
+    bot.send_message(
+        message.from_user.id,
+        f"Выбранное кол-во отелей: {message.text}. Нужны ли фото отелей?",
+        reply_markup=yes_or_no_button(),
+    )
     bot.set_state(message.from_user.id, UserInfoState.photo_count, message.chat.id)
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["count"] = message.text
@@ -167,12 +200,15 @@ def custom_get_photo_count(message: Message) -> None:
     :param message: Message
     :return: None
     """
-    if message.text.lower() == 'да':
-        bot.send_message(message.from_user.id, 'Выберите кол-во фото на каждый отель',
-                         reply_markup=photo_count_keyboard())
+    if message.text.lower() == "да":
+        bot.send_message(
+            message.from_user.id,
+            "Выберите кол-во фото на каждый отель",
+            reply_markup=photo_count_keyboard(),
+        )
         bot.set_state(message.from_user.id, UserInfoState.photo, message.chat.id)
         logger.info("Фотографии отеля? Да!")
-    elif message.text.lower() == 'нет':
+    elif message.text.lower() == "нет":
         bot.set_state(message.from_user.id, UserInfoState.photo, message.chat.id)
         custom_get_photo(message)
         logger.info("Фотографии отеля? Нет!")
@@ -185,15 +221,21 @@ def custom_get_photo(message: Message) -> None:
     :param message: Message
     :return: None
     """
-    bot.send_message(message.from_user.id, "Вы указали следующие параметры: ", reply_markup=ReplyKeyboardRemove())
+    bot.send_message(
+        message.from_user.id,
+        "Вы указали следующие параметры: ",
+        reply_markup=ReplyKeyboardRemove(),
+    )
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["count_photo"] = message.text
 
-    text = f"Город: {data['city']}\nДата заезда: {data['check_in']}\nДата выезда: {data['check_out']}\n" \
-           f"Кол-во отелей: {data['count']}\nКол-во: {data['count_photo']}\n" \
-           f"Диапазон расстояния: {data['distance_min']}-{data['distance_max']}\n" \
-           f"Диапазон цен: {data['price_min']}-{data['price_max']}\n" \
-           f"Команда: {data['command']}\n"
+    text = (
+        f"Город: {data['city']}\nДата заезда: {data['check_in']}\nДата выезда: {data['check_out']}\n"
+        f"Кол-во отелей: {data['count']}\nКол-во: {data['count_photo']}\n"
+        f"Диапазон расстояния: {data['distance_min']}-{data['distance_max']}\n"
+        f"Диапазон цен: {data['price_min']}-{data['price_max']}\n"
+        f"Команда: {data['command']}\n"
+    )
     bot.send_message(message.from_user.id, text)
     bot.send_message(message.from_user.id, "Выполняю поиск, пожалуйста, подождите...")
     search(message, data)

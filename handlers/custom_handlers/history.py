@@ -24,9 +24,13 @@ def view_history(message: Message) -> None:
                 bot.send_message(message.from_user.id, "Ничего не найдено")
                 bot.delete_state(message.from_user.id)
                 break
-            text = f"ID Пользователя: {history_dict.get_user_id(key)}\n"f"Команда: {history_dict.get_command(key)}\n" \
-                   f"Время обращения: {history_dict.get_date(key)}\n" \
-                   f"Номер обращения: {key}\n"f"{''.join(history_dict.get_hotels(key))}"
+            text = (
+                f"ID Пользователя: {history_dict.get_user_id(key)}\n"
+                f"Команда: {history_dict.get_command(key)}\n"
+                f"Время обращения: {history_dict.get_date(key)}\n"
+                f"Номер обращения: {key}\n"
+                f"{''.join(history_dict.get_hotels(key))}"
+            )
             bot.send_message(message.from_user.id, text, reply_markup=delete_history())
             err_cnt -= 1
         except:
