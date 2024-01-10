@@ -1,4 +1,4 @@
-<h1 align="center">Telegram-bot Hotel search and booking
+<h1 align="center">Telegram-bot | Hotel search and booking.
 ​
     
 [![Telegram URL](https://www.dampftbeidir.de/mediafiles/tpl/icon-telegram.png)](https://t.me/searchhotels_sb_bot) 
